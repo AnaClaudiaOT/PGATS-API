@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Transferências e Usuários",
+    "version": "1.0.0",
+    "description": "API para login, registro, consulta de usuários e transferências."
+  },
+  "paths": {
+    "/users/login": {
+      "post": {
+        "summary": "Login de usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login realizado" },
+          "400": { "description": "Dados ausentes" },
+          "401": { "description": "Login inválido" }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "summary": "Registro de usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" },
+                  "favorecido": { "type": "boolean" }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Usuário registrado" },
+          "400": { "description": "Dados ausentes" },
+          "409": { "description": "Usuário já existe" }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Consulta de usuários",
+        "responses": {
+          "200": { "description": "Lista de usuários" }
+        }
+      }
+    },
+    "/transfer": {
+      "post": {
+        "summary": "Transferência de valores",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from": { "type": "string" },
+                  "to": { "type": "string" },
+                  "value": { "type": "number" }
+                },
+                "required": ["from", "to", "value"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Transferência realizada" },
+          "400": { "description": "Erro na transferência" }
+        }
+      }
+    },
+    "/transfers": {
+      "get": {
+        "summary": "Consulta todas as transferências",
+        "responses": {
+          "200": {
+            "description": "Lista de transferências",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "from": { "type": "string" },
+                      "to": { "type": "string" },
+                      "value": { "type": "number" },
+                      "date": { "type": "string", "format": "date-time" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

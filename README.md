@@ -15,13 +15,22 @@ Esta API permite realizar login, registro de usuários, consulta de usuários e 
    node server.js
    ```
 
+
 ## Endpoints
 
-- `POST /login`: Realiza login. Envie `{ "username": "...", "password": "..." }`.
-- `POST /register`: Registra usuário. Envie `{ "username": "...", "password": "...", "favorecido": true|false }`.
-- `GET /users`: Lista todos os usuários.
-- `POST /transfer`: Realiza transferência. Envie `{ "from": "...", "to": "...", "value": 100 }`.
+- `POST /users/login`: Realiza login. Envie `{ "username": "...", "password": "..." }`. Retorna um token.
+- `POST /users/register`: Registra usuário. Envie `{ "username": "...", "password": "...", "favorecido": true|false }`.
+- `GET /users`: Lista todos os usuários (requer autenticação).
+- `POST /transfer`: Realiza transferência. Envie `{ "from": "...", "to": "...", "value": 100 }` (requer autenticação).
+- `GET /transfers`: Lista todas as transferências (requer autenticação).
 - `GET /api-docs`: Documentação Swagger interativa.
+
+
+## Autenticação
+
+- Após login, um token é retornado.
+- Para acessar `/users`, `/transfer` e `/transfers`, envie o token no header `Authorization`.
+- Se o token estiver ausente ou inválido, o acesso é negado.
 
 ## Regras de Negócio
 
@@ -33,11 +42,13 @@ Esta API permite realizar login, registro de usuários, consulta de usuários e 
 
 Para testes automatizados, importe o `app.js` em seu script de testes (ex: com Supertest).
 
+
 ## Estrutura
 
 - `controllers/`: Lógica das rotas
 - `services/`: Regras de negócio
-- `models/`: Banco de dados em memória
+- `models/`: Models em memória (`userModel.js`, `transferModel.js`)
+- `middleware/`: Middleware de autenticação
 - `app.js`: Configuração da aplicação
 - `server.js`: Inicialização do servidor
 - `swagger.json`: Documentação da API
