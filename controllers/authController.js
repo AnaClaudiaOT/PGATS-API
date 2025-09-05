@@ -1,4 +1,3 @@
-
 const { login } = require("../services/authService");
 const { generateToken } = require("../middleware/authMiddleware");
 

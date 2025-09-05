@@ -11,9 +11,9 @@ app.use(express.json());
 
 app.post("/users/login", authController.login);
 app.post("/users/register", userController.register);
-app.get("/users", authenticate, userController.getUsers);
-app.post("/transfer", authenticate, transferController.transfer);
-app.get("/transfers", authenticate, transferController.getTransfers);
+app.get("/users", userController.getUsers);
+app.post("/transfer", transferController.transfer);
+app.get("/transfers", transferController.getTransfers);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

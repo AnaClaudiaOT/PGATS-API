@@ -15,22 +15,14 @@ Esta API permite realizar login, registro de usuários, consulta de usuários e 
    node server.js
    ```
 
-
 ## Endpoints
 
-- `POST /users/login`: Realiza login. Envie `{ "username": "...", "password": "..." }`. Retorna um token.
+- `POST /users/login`: Realiza login. Envie `{ "username": "...", "password": "..." }`.
 - `POST /users/register`: Registra usuário. Envie `{ "username": "...", "password": "...", "favorecido": true|false }`.
-- `GET /users`: Lista todos os usuários (requer autenticação).
-- `POST /transfer`: Realiza transferência. Envie `{ "from": "...", "to": "...", "value": 100 }` (requer autenticação).
-- `GET /transfers`: Lista todas as transferências (requer autenticação).
+- `GET /users`: Lista todos os usuários.
+- `POST /transfer`: Realiza transferência. Envie `{ "from": "...", "to": "...", "value": 100 }`.
+- `GET /transfers`: Lista todas as transferências.
 - `GET /api-docs`: Documentação Swagger interativa.
-
-
-## Autenticação
-
-- Após login, um token é retornado.
-- Para acessar `/users`, `/transfer` e `/transfers`, envie o token no header `Authorization`.
-- Se o token estiver ausente ou inválido, o acesso é negado.
 
 ## Regras de Negócio
 
@@ -41,7 +33,6 @@ Esta API permite realizar login, registro de usuários, consulta de usuários e 
 ## Testes
 
 Para testes automatizados, importe o `app.js` em seu script de testes (ex: com Supertest).
-
 
 ## Estrutura
 
