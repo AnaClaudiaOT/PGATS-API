@@ -15,9 +15,20 @@ describe("Transfer Controller", () => {
         value: 6000,
       });
       expect(resposta.status).to.equal(400);
-      expect(resposta.body).to.have.property('error','Usuário não encontrado')
+      expect(resposta.body).to.have.property("error", "Usuário não encontrado");
+      console.log(resposta.body);
+    });
+  });
+
+  describe("GET /transfer", () => {
+    it("Quando consulto transferências inexistentes", async () => {
+      const resposta = await request(app).get("/transfer").send({
+        from: "Ana",
+        to: "Lucas",
+        value: 6000,
+      });
+      expect(resposta.status).to.equal(404);
       console.log(resposta.body);
     });
   });
 });
-
