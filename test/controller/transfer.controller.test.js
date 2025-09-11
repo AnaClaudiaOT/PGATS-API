@@ -19,7 +19,6 @@ describe("Transfer Controller", () => {
       });
       expect(resposta.status).to.equal(400);
       expect(resposta.body).to.have.property("error", "Usuário não encontrado");
-      console.log(resposta.body);
     });
 
     it("Usando Mocks: Quando informo remetente e destinatário invalido recebo 400", async () => {
@@ -34,7 +33,29 @@ describe("Transfer Controller", () => {
       });
       expect(resposta.status).to.equal(400);
       expect(resposta.body).to.have.property("error", "Usuário não encontrado");
-      console.log(resposta.body);
+      // Reseto o Mock
+      sinon.restore();
+    });
+
+    it("Usando Mocks: Quando valores válidos eu tenho sucesso com 201 CREATED", async () => {
+      // Mocar apenas a função transfer do Service
+      const transferServiceMock = sinon.stub(transferService, "transfer");
+      transferServiceMock.returns({
+        from: "Ana",
+        to: "Lucas",
+        value: 6000,
+        date: new Date(),
+      });
+
+      const resposta = await request(app).post("/transfer").send({
+        from: "Ana",
+        to: "Lucas",
+        value: 6000,
+      });
+      expect(resposta.status).to.equal(201);
+      expect(resposta.body).to.have.property("from", "Ana");
+      expect(resposta.body).to.have.property("to", "Lucas");
+      expect(resposta.body).to.have.property("value", 6000);
 
       // Reseto o Mock
       sinon.restore();
@@ -49,7 +70,6 @@ describe("Transfer Controller", () => {
         value: 6000,
       });
       expect(resposta.status).to.equal(404);
-      console.log(resposta.body);
     });
   });
 });

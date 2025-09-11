@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\"",
+    "test-external": "mocha \"test/external/**/*.test.js\"",
+    "test-controller": "mocha \"test/controller/**/*.test.js\"",
     "start": "node server.js"
   },
   "dependencies": {
