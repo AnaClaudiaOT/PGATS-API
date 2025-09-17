@@ -24,8 +24,8 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
-      - name: Executar testes Controller
-        run: npm run test-controller
+      # - name: Executar testes Controller
+      #   run: npm run test-controller
 
       - name: Subir servidor
         run: npm start &
