@@ -60,6 +60,40 @@ describe("Transfer Controller", () => {
       // Reseto o Mock
       sinon.restore();
     });
+
+    it("Usando Mocks - Validação com Json: Quando valores válidos eu tenho sucesso com 201 CREATED", async () => {
+      // Preparando os Dados
+      // Carregar o arquivo compare.json
+      // Preparar a forma de ignorar os campos dinamicos
+
+      // Mocar apenas a função transfer do Service
+      const transferServiceMock = sinon.stub(transferService, "transfer");
+      transferServiceMock.returns({
+        from: "Ana",
+        to: "Lucas",
+        value: 6000,
+        date: new Date(),
+      });
+
+      const resposta = await request(app).post("/transfer").send({
+        from: "Ana",
+        to: "Lucas",
+        value: 6000,
+      });
+
+      expect(resposta.status).to.equal(201);
+
+      // Implementando validação através do arquivo json
+      const respostaEsperada = require("../fixtures/respostas/compare.json");
+      delete resposta.body.date;
+      delete respostaEsperada.date;
+
+      // Somente um expect para comparar a resposta.body com a String contida no arquivo compare.json
+      expect(resposta.body).to.eql(respostaEsperada);
+
+      // Reseto o Mock
+      sinon.restore();
+    });
   });
 
   describe("GET /transfer", () => {

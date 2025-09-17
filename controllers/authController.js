@@ -1,5 +1,6 @@
 const { login } = require("../services/authService");
-const { generateToken } = require("../middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
+const { SECRET } = require("../middleware/jwtAuth");
 
 exports.login = (req, res) => {
   const { username, password } = req.body;
@@ -7,7 +8,12 @@ exports.login = (req, res) => {
     return res.status(400).json({ error: "Informe usuário e senha" });
   const user = login(username, password);
   if (!user) return res.status(401).json({ error: "Login inválido" });
-  const token = generateToken(user.username);
+  // Gera JWT
+  const token = jwt.sign(
+    { username: user.username, favorecido: user.favorecido },
+    SECRET,
+    { expiresIn: "1h" }
+  );
   res.json({
     message: "Login realizado com sucesso",
     token,
