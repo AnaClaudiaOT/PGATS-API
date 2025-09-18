@@ -19,5 +19,9 @@ exports.transfer = (req, res) => {
 };
 
 exports.getTransfers = (req, res) => {
-  res.json(getAllTransfers());
+  const transfers = getAllTransfers();
+  if (!transfers || transfers.length === 0) {
+    return res.status(404).json({ error: "Nenhuma transferência encontrada" });
+  }
+  res.json(transfers);
 };

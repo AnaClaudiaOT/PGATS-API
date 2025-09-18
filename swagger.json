@@ -127,6 +127,7 @@
               }
             }
           },
+          "404": { "description": "Nenhuma transferência encontrada" },
           "401": { "description": "Token não informado" },
           "403": { "description": "Token inválido" }
         }

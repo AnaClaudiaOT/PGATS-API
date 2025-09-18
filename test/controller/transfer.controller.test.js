@@ -10,13 +10,27 @@ const app = require("../../app");
 const transferService = require("../../services/transferService");
 
 describe("Transfer Controller", () => {
+  let token;
+
+  beforeEach(async () => {
+    // Realiza login e armazena o token para cada teste
+    const respostaLogin = await request(app).post("/users/login").send({
+      username: "Ana",
+      password: "123456",
+    });
+    token = respostaLogin.body.token;
+  });
+
   describe("POST /transfer", () => {
     it("Quando informo remetente e destinatário invalido recebo 400", async () => {
-      const resposta = await request(app).post("/transfer").send({
-        from: "Ana",
-        to: "Lucas",
-        value: 6000,
-      });
+      const resposta = await request(app)
+        .post("/transfer")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          from: "Ana",
+          to: "Lucas",
+          value: 6000,
+        });
       expect(resposta.status).to.equal(400);
       expect(resposta.body).to.have.property("error", "Usuário não encontrado");
     });
@@ -26,11 +40,14 @@ describe("Transfer Controller", () => {
       const transferServiceMock = sinon.stub(transferService, "transfer");
       transferServiceMock.throws(new Error("Usuário não encontrado"));
 
-      const resposta = await request(app).post("/transfer").send({
-        from: "Ana",
-        to: "Lucas",
-        value: 6000,
-      });
+      const resposta = await request(app)
+        .post("/transfer")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          from: "Ana",
+          to: "Lucas",
+          value: 6000,
+        });
       expect(resposta.status).to.equal(400);
       expect(resposta.body).to.have.property("error", "Usuário não encontrado");
       // Reseto o Mock
@@ -47,11 +64,16 @@ describe("Transfer Controller", () => {
         date: new Date(),
       });
 
-      const resposta = await request(app).post("/transfer").send({
-        from: "Ana",
-        to: "Lucas",
-        value: 6000,
-      });
+      const resposta = await request(app)
+        .post("/transfer")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          from: "Ana",
+          to: "Lucas",
+          value: 6000,
+        });
+
+      console.log(resposta.body);
       expect(resposta.status).to.equal(201);
       expect(resposta.body).to.have.property("from", "Ana");
       expect(resposta.body).to.have.property("to", "Lucas");
@@ -75,11 +97,14 @@ describe("Transfer Controller", () => {
         date: new Date(),
       });
 
-      const resposta = await request(app).post("/transfer").send({
-        from: "Ana",
-        to: "Lucas",
-        value: 6000,
-      });
+      const resposta = await request(app)
+        .post("/transfer")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          from: "Ana",
+          to: "Lucas",
+          value: 6000,
+        });
 
       expect(resposta.status).to.equal(201);
 
@@ -96,14 +121,30 @@ describe("Transfer Controller", () => {
     });
   });
 
-  describe("GET /transfer", () => {
+  describe("GET /transfers", () => {
     it("Quando consulto transferências inexistentes", async () => {
-      const resposta = await request(app).get("/transfer").send({
-        from: "Ana",
-        to: "Lucas",
-        value: 6000,
+      const respostaLogin = await request(app).post("/users/login").send({
+        username: "Ana",
+        password: "123456",
       });
+
+      const token = respostaLogin.body.token;
+
+      const resposta = await request(app)
+        .get("/transfers")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          from: "Ana",
+          to: "Lucas",
+          value: 100,
+        });
       expect(resposta.status).to.equal(404);
+      expect(resposta.body).to.have.property(
+        "error",
+        "Nenhuma transferência encontrada"
+      );
+      console.log(resposta.body);
     });
   });
 });
+
