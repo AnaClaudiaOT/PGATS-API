@@ -1,6 +1,6 @@
 # API de Transferências e Usuários
 
-API Node.js para login, registro, consulta de usuários e transferências, com autenticação JWT e banco de dados em memória. Ideal para aprendizado de testes automatizados e arquitetura Express.
+API Node.js para login, registro, consulta de usuários e transferências, com autenticação JWT e banco de dados em memória.
 
 ## Instalação e Execução
 
@@ -64,6 +64,10 @@ API Node.js para login, registro, consulta de usuários e transferências, com a
 - Para rodar apenas os testes de controller:
   ```bash
   npm run test-controller
+  ```
+- Para rodar apenas os testes no servidor local:
+  ```bash
+  npm run test-external
   ```
 
 ## Detalhes das Dependências
