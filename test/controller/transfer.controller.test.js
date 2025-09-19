@@ -28,7 +28,7 @@ describe("Transfer Controller", () => {
         .set("Authorization", `Bearer ${token}`)
         .send({
           from: "Ana",
-          to: "Lucas",
+          to: "João",
           value: 6000,
         });
       expect(resposta.status).to.equal(400);
@@ -45,7 +45,7 @@ describe("Transfer Controller", () => {
         .set("Authorization", `Bearer ${token}`)
         .send({
           from: "Ana",
-          to: "Lucas",
+          to: "João",
           value: 6000,
         });
       expect(resposta.status).to.equal(400);
@@ -147,4 +147,3 @@ describe("Transfer Controller", () => {
     });
   });
 });
-

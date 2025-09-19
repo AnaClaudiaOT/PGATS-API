@@ -1,5 +1,9 @@
 // Banco de dados em memória
-const transfers = [];
+let transfers = [];
+
+function reset() {
+  transfers = [];
+}
 
 function add(transfer) {
   transfers.push(transfer);
@@ -12,4 +16,5 @@ function getAll() {
 module.exports = {
   add,
   getAll,
+  reset,
 };

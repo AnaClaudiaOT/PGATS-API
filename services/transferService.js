@@ -11,8 +11,9 @@ function transfer(from, to, value) {
   }
   sender.saldo -= value;
   recipient.saldo += value;
-  transferModel.add({ from, to, value, date: new Date() });
-  return { success: true };
+  const transferencia = { from, to, value, date: new Date() };
+  transferModel.add(transferencia);
+  return transferencia;
 }
 
 function getAllTransfers() {
