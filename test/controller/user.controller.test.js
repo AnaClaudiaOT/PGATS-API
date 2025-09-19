@@ -10,7 +10,7 @@ const app = require("../../app");
 const transferService = require("../../services/userService");
 
 describe("User Controller", () => {
-  describe("POST/USER", () => {
+  describe("POST - users", () => {
     it("Cadastrando usuário", async () => {
       const resposta = await request(app).post("/users/register").send({
         username: "Fabio",

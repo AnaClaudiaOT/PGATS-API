@@ -7,7 +7,7 @@ const app = require("../../app");
 const userModel = require("../../models/userModel");
 
 describe("Transfer - External", () => {
-  describe("POST /transfer", () => {
+  describe("POST - transfer", () => {
     let token;
 
     beforeEach(async () => {

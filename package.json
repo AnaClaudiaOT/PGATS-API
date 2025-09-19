@@ -4,9 +4,9 @@
   "description": "Esta API permite o registro, login, consulto de usuários e transferências",
   "main": "app.js",
   "scripts": {
-    "test": "mocha \"test/**/*.test.js\"",
-    "test-external": "mocha \"test/external/**/*.test.js\"",
-    "test-controller": "mocha \"test/controller/**/*.test.js\"",
+    "test": "mocha \"test/**/*.test.js\" --reporter mochawesome",
+    "test-external": "mocha \"test/external/**/*.test.js\" --reporter mochawesome",
+    "test-controller": "mocha \"test/controller/**/*.test.js\" --reporter mochawesome",
     "start": "node server.js"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "mochawesome": "^7.1.4",
     "start-server-and-test": "^2.1.1"
   }
 }

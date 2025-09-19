@@ -21,7 +21,7 @@ describe("Transfer Controller", () => {
     token = respostaLogin.body.token;
   });
 
-  describe("POST /transfer", () => {
+  describe("POST - Transfer", () => {
     it("Quando informo remetente e destinatário invalido recebo 400", async () => {
       const resposta = await request(app)
         .post("/transfer")
@@ -121,7 +121,7 @@ describe("Transfer Controller", () => {
     });
   });
 
-  describe("GET /transfers", () => {
+  describe("GET - transfers", () => {
     it("Quando consulto transferências inexistentes", async () => {
       const respostaLogin = await request(app).post("/users/login").send({
         username: "Ana",
