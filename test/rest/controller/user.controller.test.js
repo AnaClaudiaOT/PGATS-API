@@ -4,13 +4,13 @@ const sinon = require("sinon");
 const { expect } = require("chai");
 
 // Aplicação
-const app = require("../../app");
+const app = require("../../../app");
 
 // Mocks
-const transferService = require("../../services/userService");
+const transferService = require("../../../services/userService");
 
-describe("User Controller", () => {
-  describe("POST - users", () => {
+describe("Testes de Registros e Login de usuários", () => {
+  describe("Validações de usuários", () => {
     it("Cadastrando usuário", async () => {
       const resposta = await request(app).post("/users/register").send({
         username: "Fabio",
@@ -46,6 +46,24 @@ describe("User Controller", () => {
         "error",
         "Informe usuário e senha"
       );
+    });
+
+    it("Validar que não é possível registrar usuário duplicado", async () => {
+      await request(app).post("/users/register").send({
+        username: "Duplicado",
+        password: "senha",
+        favorecido: true,
+      });
+
+      const resposta = await request(app).post("/users/register").send({
+        username: "Duplicado",
+        password: "senha",
+        favorecido: true,
+      });
+
+      expect(resposta.status).to.equal(409);
+      expect(resposta.body).to.have.property("error");
+      expect(resposta.body).to.have.property("error", "Usuário já existe");
     });
   });
 });

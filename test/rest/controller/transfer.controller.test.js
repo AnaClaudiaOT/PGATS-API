@@ -4,12 +4,12 @@ const sinon = require("sinon");
 const { expect } = require("chai");
 
 // Aplicação
-const app = require("../../app");
+const app = require("../../../app");
 
 // Mocks
-const transferService = require("../../services/transferService");
+const transferService = require("../../../services/transferService");
 
-describe("Transfer Controller", () => {
+describe("Testes de Transferências - Controller", () => {
   let token;
 
   beforeEach(async () => {
@@ -21,7 +21,7 @@ describe("Transfer Controller", () => {
     token = respostaLogin.body.token;
   });
 
-  describe("POST - Transfer", () => {
+  describe("Validações de Transferências", () => {
     it("Quando informo remetente e destinatário invalido recebo 400", async () => {
       const resposta = await request(app)
         .post("/transfer")
@@ -73,7 +73,6 @@ describe("Transfer Controller", () => {
           value: 6000,
         });
 
-      console.log(resposta.body);
       expect(resposta.status).to.equal(201);
       expect(resposta.body).to.have.property("from", "Ana");
       expect(resposta.body).to.have.property("to", "Lucas");
@@ -109,7 +108,7 @@ describe("Transfer Controller", () => {
       expect(resposta.status).to.equal(201);
 
       // Implementando validação através do arquivo json
-      const respostaEsperada = require("../fixtures/respostas/compare.json");
+      const respostaEsperada = require("../../rest/fixtures/respostas/compare.json");
       delete resposta.body.date;
       delete respostaEsperada.date;
 
@@ -119,17 +118,38 @@ describe("Transfer Controller", () => {
       // Reseto o Mock
       sinon.restore();
     });
-  });
 
-  describe("GET - transfers", () => {
-    it("Quando consulto transferências inexistentes", async () => {
+    it("Não permite transferência acima de 5.000 para não favorecido", async () => {
+      await request(app).post("/users/register").send({
+        username: "NaoFavorecido",
+        password: "123456",
+        favorecido: false,
+      });
+
       const respostaLogin = await request(app).post("/users/login").send({
         username: "Ana",
         password: "123456",
       });
-
       const token = respostaLogin.body.token;
 
+      const resposta = await request(app)
+        .post("/transfer")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          from: "Ana",
+          to: "NaoFavorecido",
+          value: 6000,
+        });
+      expect(resposta.status).to.equal(400);
+      expect(resposta.body).to.have.property(
+        "error",
+        "Transferência acima de R$ 5.000,00 só para favorecidos"
+      );
+    });
+  });
+
+  describe("Busca de Transferências", () => {
+    it("Quando consulto transferências inexistentes", async () => {
       const resposta = await request(app)
         .get("/transfers")
         .set("Authorization", `Bearer ${token}`)
@@ -143,7 +163,6 @@ describe("Transfer Controller", () => {
         "error",
         "Nenhuma transferência encontrada"
       );
-      console.log(resposta.body);
     });
   });
 });
