@@ -3,11 +3,11 @@ const request = require("supertest");
 const { expect } = require("chai");
 
 // Aplicação
-const app = require("../../app");
-const userModel = require("../../models/userModel");
+const app = require("../../../app");
+const userModel = require("../../../models/userModel");
 
-describe("Transfer - External", () => {
-  describe("POST - transfer", () => {
+describe("Testes de Transferências - External", () => {
+  describe("Validações de transferências", () => {
     let token;
 
     beforeEach(async () => {
@@ -54,7 +54,6 @@ describe("Transfer - External", () => {
           value: 100,
         });
 
-      console.log(resposta.body);
       expect(resposta.status).to.equal(201);
       expect(resposta.body).to.have.property("from", "Ana");
       expect(resposta.body).to.have.property("to", "Lucas");

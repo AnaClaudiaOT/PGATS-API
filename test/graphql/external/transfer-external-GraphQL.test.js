@@ -3,23 +3,10 @@ const { expect } = require("chai");
 
 describe("Testes de Transferências - GraphQL", () => {
   beforeEach(async () => {
+    const loginUser = require("../fixtures/requisicoes/login/loginUser.json");
     const resposta = await request("http://localhost:4000/graphql")
       .post("")
-      .send({
-        query: `
-            mutation Login($username: String!, $password: String!) {
-             login(username: $username, password: $password) {
-                  token
-                  user {
-                   username
-                }
-              }
-         }`,
-        variables: {
-          username: "Ana",
-          password: "123456",
-        },
-      });
+      .send(loginUser);
     token = resposta.body.data.login.token;
   });
 
@@ -42,7 +29,6 @@ describe("Testes de Transferências - GraphQL", () => {
           value: 100,
         },
       });
-    console.log(respostaTransferencia.status);
     expect(respostaTransferencia.status).to.equal(200);
   });
 

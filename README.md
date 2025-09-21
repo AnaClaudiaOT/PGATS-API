@@ -10,16 +10,27 @@ API Node.js para login, registro, consulta de usuários e transferências, com a
    npm install
    ```
 
-2. Para rodar o servidor localmente:
-   ```bash
-   node server.js
-   ```
+2. Para rodar o servidor REST localmente:
+
+```bash
+node server.js
+```
+
+3. Para rodar o servidor GraphQL localmente:
+
+```bash
+npm run start:graphql
+```
 
 ## Scripts Úteis
 
-- `npm start` — Inicia o servidor (se configurado no package.json)
-- `npm test` — Executa todos os testes automatizados
-- `npm run test-controller` — Executa apenas os testes de controller
+- `npm start` — Inicia o servidor REST
+- `npm run start:graphql` — Inicia o servidor GraphQL
+- `npm test` — Executa todos os testes automatizados (REST e GraphQL)
+- `npm run test-controller-rest` — Executa apenas os testes de controller REST
+- `npm run test-external-rest` — Executa apenas os testes de integração/external REST
+- `npm run test-controller-graphql` — Executa apenas os testes de controller GraphQL
+- `npm run test-external-graphql` — Executa apenas os testes de integração/external GraphQL
 
 ## Endpoints Principais
 
@@ -30,22 +41,6 @@ API Node.js para login, registro, consulta de usuários e transferências, com a
 - `GET /transfers` — Lista transferências (requer autenticação JWT).
 - `GET /api-docs` — Documentação Swagger interativa.
 
-### Exemplo de uso com autenticação
-
-1. Faça login para obter o token:
-   ```json
-   POST /users/login
-   {
-     "username": "Ana",
-     "password": "123456"
-   }
-   // resposta: { "token": "..." }
-   ```
-2. Use o token nas rotas protegidas:
-   ```http
-   Authorization: Bearer <token>
-   ```
-
 ## Regras de Negócio
 
 - Login exige usuário e senha válidos.
@@ -54,42 +49,43 @@ API Node.js para login, registro, consulta de usuários e transferências, com a
 
 ## Testes Automatizados
 
-- Os testes utilizam Supertest, Chai e Sinon para mocks.
-- O arquivo `test/controller/transfer.controller.test.js` cobre cenários de sucesso, erro e autenticação.
-- Antes de cada teste, é feito login e o token JWT é usado nas requisições protegidas.
-- Para rodar todos os testes:
-  ```bash
-  npm test
-  ```
-- Para rodar apenas os testes de controller:
-  ```bash
-  npm run test-controller
-  ```
-- Para rodar apenas os testes no servidor local:
-  ```bash
-  npm run test-external
-  ```
+### Testes REST
 
-## Detalhes das Dependências
+- **Controller (`test/controller/`)**
 
-- **express** — Framework web para rotas e middlewares.
-- **jsonwebtoken** — Geração e validação de tokens JWT para autenticação.
-- **swagger-ui-express** — Exibe a documentação interativa da API.
-- **mocha** — Framework de testes automatizados.
-- **chai** — Biblioteca de asserções para testes (expect, assert, should).
-- **sinon** — Mocks, spies e stubs para testes isolados.
-- **supertest** — Testes de integração HTTP simulando requisições à API.
+  - Testam diretamente os controllers da API REST.
+  - Cobrem cenários de sucesso, erro de validação, autenticação e regras de negócio.
+  - Utilizam mocks (Sinon) para isolar dependências dos services e models.
+  - Exemplos: transferência válida, saldo insuficiente, usuário não encontrado.
 
-## Estrutura do Projeto
+- **External REST (`test/external-rest/`)**
+  - Testam a API REST rodando em um servidor real (end-to-end).
+  - Simulam requisições HTTP reais usando Supertest.
+  - Testam a integração entre controllers, services e models.
+  - Exemplos: login, registro, transferência via endpoint real.
 
-- `controllers/` — Lógica das rotas (ex: `transferController.js`)
-- `services/` — Regras de negócio (ex: `transferService.js`)
-- `models/` — Models em memória (`userModel.js`, `transferModel.js`)
-- `middleware/` — Middlewares de autenticação e JWT
-- `test/` — Testes automatizados e fixtures
-- `app.js` — Configuração do Express
-- `server.js` — Inicialização do servidor
-- `swagger.json` — Documentação da API
+### Testes GraphQL
+
+- **External GraphQL (`test/external-graphql/`)**
+  - Testam a API GraphQL rodando em um servidor real.
+  - Simulam queries e mutations reais, incluindo autenticação via token JWT.
+  - Testam a integração do fluxo GraphQL.
+  - Exemplos:
+    - Transferência entre usuários válidos
+    - Erro ao transferir para usuário inexistente
+    - Erro ao transferir valor acima do saldo disponível
+
+### Scripts de Teste
+
+- `npm run test-controller` — Testes unitários/mocados dos controllers REST
+- `npm run test-external-rest` — Testes de integração/end-to-end da API REST
+- `npm run test-external-graphql` — Testes de integração/end-to-end da API GraphQL
+
+Para rodar todos os testes:
+
+```bash
+npm test
+```
 
 ---
 
@@ -111,76 +107,23 @@ npm run start:graphql
 
 Acesse a URL http://localhost:4000/graphql.
 
-### Exemplos de Queries e Mutations
+## Detalhes das Dependências
 
-#### Registrar usuário
+- **express** — Framework web para rotas e middlewares.
+- **jsonwebtoken** — Geração e validação de tokens JWT para autenticação.
+- **swagger-ui-express** — Exibe a documentação interativa da API.
+- **mocha** — Framework de testes automatizados.
+- **chai** — Biblioteca de asserções para testes (expect, assert, should).
+- **sinon** — Mocks, spies e stubs para testes isolados.
+- **supertest** — Testes de integração HTTP simulando requisições à API.
 
-```graphql
-mutation {
-  register(username: "Ana", password: "123456", favorecido: true) {
-    username
-    favorecido
-    saldo
-  }
-}
-```
+## Estrutura do Projeto
 
-#### Login
-
-```graphql
-mutation {
-  login(username: "Ana", password: "123456") {
-    token
-    user {
-      username
-      favorecido
-      saldo
-    }
-  }
-}
-```
-
-#### Listar usuários
-
-```graphql
-query {
-  users {
-    username
-    favorecido
-    saldo
-  }
-}
-```
-
-#### Realizar transferência (autenticado)
-
-```graphql
-mutation {
-  transfer(from: "Ana", to: "Lucas", value: 100) {
-    from
-    to
-    value
-    date
-  }
-}
-```
-
-> Para mutations protegidas, envie o header:
->
-> `Authorization: Bearer <token>`
-
-#### Listar transferências (autenticado)
-
-```graphql
-query {
-  transfers {
-    from
-    to
-    value
-    date
-  }
-}
-```
-
----
-
+- `controllers/` — Lógica das rotas (ex: `transferController.js`)
+- `services/` — Regras de negócio (ex: `transferService.js`)
+- `models/` — Models em memória (`userModel.js`, `transferModel.js`)
+- `middleware/` — Middlewares de autenticação e JWT
+- `test/` — Testes automatizados e fixtures
+- `app.js` — Configuração do Express
+- `server.js` — Inicialização do servidor
+- `swagger.json` — Documentação da API
