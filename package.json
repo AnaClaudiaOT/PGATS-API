@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\" --reporter mochawesome",
-    "test-external": "mocha \"test/external/**/*.test.js\" --reporter mochawesome",
+    "test-external-rest": "mocha \"test/external-rest/**/*.test.js\" --reporter mochawesome",
+    "test-external-graphql": "mocha \"test/external-graphql/**/*.test.js\"",
     "test-controller": "mocha \"test/controller/**/*.test.js\" --reporter mochawesome",
     "start": "node server.js",
     "start:graphql": "node graphql/server.js"

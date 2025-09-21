@@ -29,9 +29,18 @@ jobs:
 
       - name: Subir servidor
         run: npm start &
-        
+
       - name: Aguardar servidor iniciar
         run: sleep 5
-                
-      - name: Executar testes External
-        run: npm run test-external
+
+      - name: Executar testes External REST
+        run: npm run test-external-rest
+
+      - name: Subir servidor GraphQL
+        run: npm run start:graphql &
+
+      - name: Aguardar servidor GraphQL iniciar
+        run: sleep 5
+
+      - name: Executar testes External GraphQL
+        run: npm run test-external-graphql
