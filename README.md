@@ -93,4 +93,94 @@ API Node.js para login, registro, consulta de usuários e transferências, com a
 
 ---
 
-API criada para fins de aprendizado de testes, autenticação e automação com Node.js.
+## API GraphQL
+
+A API GraphQL expõe os mesmos serviços da REST, usando Apollo Server v4 e Express.
+
+### Instalação das dependências GraphQL
+
+```bash
+npm install @apollo/server@4
+```
+
+### Execução da API GraphQL
+
+```bash
+npm run start:graphql
+```
+
+Acesse a URL http://localhost:4000/graphql.
+
+### Exemplos de Queries e Mutations
+
+#### Registrar usuário
+
+```graphql
+mutation {
+  register(username: "Ana", password: "123456", favorecido: true) {
+    username
+    favorecido
+    saldo
+  }
+}
+```
+
+#### Login
+
+```graphql
+mutation {
+  login(username: "Ana", password: "123456") {
+    token
+    user {
+      username
+      favorecido
+      saldo
+    }
+  }
+}
+```
+
+#### Listar usuários
+
+```graphql
+query {
+  users {
+    username
+    favorecido
+    saldo
+  }
+}
+```
+
+#### Realizar transferência (autenticado)
+
+```graphql
+mutation {
+  transfer(from: "Ana", to: "Lucas", value: 100) {
+    from
+    to
+    value
+    date
+  }
+}
+```
+
+> Para mutations protegidas, envie o header:
+>
+> `Authorization: Bearer <token>`
+
+#### Listar transferências (autenticado)
+
+```graphql
+query {
+  transfers {
+    from
+    to
+    value
+    date
+  }
+}
+```
+
+---
+
