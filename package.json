@@ -7,7 +7,6 @@
     "test": "mocha \"test/rest/controller/**/*.test.js\" \"test/rest/external-rest/**/*.test.js\" \"test/graphql/external/**/*.test.js\" --reporter mochawesome",
     "test-controller-rest": "mocha \"test/rest/controller/**/*.test.js\" --reporter mochawesome",
     "test-external-rest": "mocha \"test/rest/external-rest/**/*.test.js\" --reporter mochawesome",
-    "test-controller-graphql": "mocha \"test/graphql/controller/**/*.test.js\"",
     "test-external-graphql": "mocha \"test/graphql/external/**/*.test.js\"",
     "start": "node server.js",
     "start:graphql": "node graphql/server.js"

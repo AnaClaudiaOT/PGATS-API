@@ -6,9 +6,9 @@ API Node.js para login, registro, consulta de usuários e transferências, com a
 
 1. Instale as dependências do projeto:
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 2. Para rodar o servidor REST localmente:
 
