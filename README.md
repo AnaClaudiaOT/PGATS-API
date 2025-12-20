@@ -32,6 +32,165 @@ npm run start:graphql
 - `npm run test-controller-graphql` — Executa apenas os testes de controller GraphQL
 - `npm run test-external-graphql` — Executa apenas os testes de integração/external GraphQL
 
+
+## Testes de Performance com K6
+
+O projeto inclui testes de performance utilizando o [K6](https://k6.io/), localizados em `test/rest/external-rest/k6/`. Esses testes avaliam o desempenho dos endpoints de login e registro de usuários, além de permitir cenários avançados como Data-Driven Testing e simulação de múltiplos usuários.
+
+### Estrutura e Conceitos Utilizados
+
+#### 1. **Thresholds**
+Permitem definir limites de performance esperados para as requisições.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+export let options = {
+  thresholds: {
+    http_req_duration: ['p(95)<2000'],
+    'register_duration': ['p(95)<2000'],
+  },
+  // ...
+};
+```
+
+#### 2. **Checks**
+Asserções para validar respostas HTTP.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+check(res, { 'register status 201': (r) => r.status === 201 });
+```
+*Garante que o status da resposta do registro seja 201.*
+
+#### 3. **Helpers**
+Funções utilitárias reutilizáveis, como `getBaseUrl` e `login`, importadas de outros arquivos.
+*Exemplo extraído de `test/rest/external-rest/k6/helpers`:*
+
+```js
+import { getBaseUrl } from './helpers/getBaseUrl.js';
+import { login } from './helpers/login.js';
+```
+
+#### 4. **Trends**
+Permitem criar métricas customizadas para monitorar tempos de resposta específicos.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+import { Trend } from 'k6/metrics';
+const registerDuration = new Trend('register_duration');
+registerDuration.add(res.timings.duration);
+```
+*Monitora a duração das requisições de registro.*
+
+#### 5. **Faker**
+Geração de dados dinâmicos e aleatórios para simular usuários reais.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+import faker from 'k6/x/faker';
+const baseName = faker.person.firstName();
+const password = faker.internet.password();
+```
+*Garante que cada execução utilize dados únicos.*
+
+#### 6. **Variável de Ambiente**
+Permite customizar a URL base sem alterar o código.
+*Exemplo extraído de `test/rest/external-rest/k6/helpers/getBaseUrl.js`:*
+
+```js
+export function getBaseUrl() {
+  return __ENV.BASE_URL || 'http://localhost:3000';
+}
+```
+
+#### 7. **Stages**
+Definem o ramp-up, pico e ramp-down de usuários virtuais:
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+stages: [
+  { duration: '3s', target: 10 },
+  { duration: '15s', target: 10 },
+  { duration: '2s', target: 100 },
+  { duration: '3s', target: 100 },
+  { duration: '5s', target: 10 },
+  { duration: '5s', target: 0 },
+],
+```
+*Simula diferentes cargas de usuários ao longo do teste.*
+
+#### 8. **Reaproveitamento de Resposta**
+Utiliza dados de uma resposta (ex: usuário criado) em etapas seguintes.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+group('Registrar usuário', function () {
+  // ... gera username e registra usuário ...
+});
+group('Login com reaproveitamento de resposta', function () {
+  token = login(username, password);
+});
+```
+*O usuário criado é utilizado imediatamente para login.*
+
+#### 9. **Uso de Token de Autenticação**
+O helper de login retorna o token JWT, que pode ser utilizado em requisições autenticadas.
+*Exemplo extraído de `test/rest/external-rest/k6/helpers/login.js`:*
+
+```js
+export function login(username, password) {
+  // ...
+  const token = res.json('token');
+  return token;
+}
+```
+
+#### 10. **Data-Driven Testing (DDT)**
+Execução de testes com múltiplos usuários a partir de um arquivo de dados.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.ddt.js`:*
+
+```js
+import { SharedArray } from 'k6/data';
+const users = new SharedArray('users', function () {
+  return JSON.parse(open('./data/login.test.data.json'))
+});
+// ...
+const user = users[(__VU - 1) % users.length];
+```
+*Permite testar cenários variados de login e registro.*
+
+#### 11. **Groups**
+Organiza o teste em blocos lógicos, facilitando a leitura e análise dos resultados.
+*Exemplo extraído de `test/rest/external-rest/k6/login.test.js`:*
+
+```js
+group('Registrar usuário', function () {
+  // ...
+});
+group('Login com reaproveitamento de resposta', function () {
+  // ...
+});
+```
+
+### Comandos para Executar os Testes de Performance
+
+**Com dashboard web e exportação do relatório em HTML:**
+
+```bash
+K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_PERIOD=2s K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run test/rest/external-rest/k6/login.test.js
+```
+
+**Sem dashboard:**
+
+```bash
+k6 run test/rest/external-rest/k6/login.test.js
+k6 run test/rest/external-rest/k6/login.test.ddt.js
+```
+
+#### Exemplo de Relatório Gerado
+
+![Relatório de Performance](relatorio.png)
+
 ## Endpoints Principais
 
 - `POST /users/login` — Login. Envie `{ "username": "...", "password": "..." }`. Retorna um token JWT.
