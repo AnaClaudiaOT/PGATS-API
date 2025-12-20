@@ -3,8 +3,8 @@
 
 ## Glossário
 
-- [Instalação e Execução](#instalacao-e-execucao)
-- [Scripts Úteis](#scripts-uteis)
+- [Instalação e Execução](#instalação-e-execução)
+- [Scripts Úteis](#scripts-úteis)
 - [Testes de Performance com K6](#testes-de-performance-com-k6)
 - [Endpoints Principais](#endpoints-principais)
 - [Regras de Negócio](#regras-de-negocio)
