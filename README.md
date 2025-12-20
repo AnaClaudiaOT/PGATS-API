@@ -7,10 +7,10 @@
 - [Scripts Úteis](#scripts-úteis)
 - [Testes de Performance com K6](#testes-de-performance-com-k6)
 - [Endpoints Principais](#endpoints-principais)
-- [Regras de Negócio](#regras-de-negocio)
+- [Regras de Negócio](#regras-de-negócio)
 - [Testes Automatizados](#testes-automatizados)
 - [API GraphQL](#api-graphql)
-- [Detalhes das Dependências](#detalhes-das-dependencias)
+- [Detalhes das Dependências](#detalhes-das-dependências)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 
 API Node.js para login, registro, consulta de usuários e transferências, com autenticação JWT e banco de dados em memória.
